@@ -73,3 +73,21 @@ function run_toxic_comments_protection() {
 
 }
 run_toxic_comments_protection();
+
+function tcp_comments_columns($columns) {
+
+	$new_columns = array(
+		'tcp_score' => __('Toxic Score', 'toxic-comments-protection'),
+	);
+    return array_merge($columns, $new_columns);
+}
+add_filter('manage_edit-comments_columns' , 'tcp_comments_columns');
+add_filter('manage_comments_custom_column' , 'tcp_comments_columns_value',1,2);
+
+function tcp_comments_columns_value($column,	$comment_id){
+	if($column == 'tcp_score'){
+		$score = floatval(get_comment_meta($comment_id, 'tcp_score', true));
+		$rounded_score = round($score * 100, 2) . '%';
+		echo sprintf('<span class="response column-response"><span class="post-com-count-wrapper post-com-count-1"><a href="#" class="post-com-count post-com-count-approved"><span class="comment-count-approved" aria-hidden="true">%s</span><span class="screen-reader-text">11 comments</span></a></span></span>',strval($rounded_score));
+	}
+}

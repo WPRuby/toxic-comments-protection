@@ -100,4 +100,51 @@ class Toxic_Comments_Protection_Public {
 
 	}
 
+
+	/**
+	 * The function process the comment when posted
+	 *
+	 * @since    1.0.0
+	 */
+	public function process_comment($comment_id,	$comment_approved,	$commentdata) {
+
+		$comment = array(
+			'comment' => array(
+				'text' => $commentdata['comment_content'],
+				'type' => 'PLAIN_TEXT',
+			),
+			'requestedAttributes' => array(
+				'TOXICITY' => array(
+					'scoreType'=>'PROBABILITY',
+				)
+			),
+				'languages' => 'en',
+				'doNotStore' => false,
+		 );
+
+		// The data to send to the API
+		$postData = ($comment);
+
+		// Setup cURL
+		$ch = curl_init('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=AIzaSyBuynwHEM9k9oeAn41GV5c5jQhAuBdgqO0');
+		curl_setopt_array($ch, array(
+		    CURLOPT_POST => TRUE,
+		    CURLOPT_RETURNTRANSFER => TRUE,
+		    CURLOPT_HTTPHEADER => array(
+		        'Content-Type: application/json'
+		    ),
+		    CURLOPT_POSTFIELDS => json_encode($postData)
+		));
+
+		// Send the request
+		$response = curl_exec($ch);
+
+
+		// Decode the response
+		$responseData = json_decode($response, TRUE);
+		$score = $responseData['attributeScores']['TOXICITY']['summaryScore']['value'];
+		add_comment_meta( $comment_id, 'tcp_score', $score );
+
+
+	}
 }
