@@ -55,7 +55,8 @@ class Toxic_Comments_Protection {
 	 * @access   protected
 	 * @var      string    $version    The current version of the plugin.
 	 */
-	protected $version;
+	 protected $version;
+	 protected $settings;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -75,6 +76,8 @@ class Toxic_Comments_Protection {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->settings = new TCP_Settings();
+		
 
 	}
 
@@ -113,11 +116,14 @@ class Toxic_Comments_Protection {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-toxic-comments-protection-admin.php';
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-ruby-help-desk-settings-api.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-ruby-help-desk-settings.php';
+
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-toxic-comments-protection-public.php';
+		 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-toxic-comments-protection-public.php';
 
 		$this->loader = new Toxic_Comments_Protection_Loader();
 
@@ -153,6 +159,7 @@ class Toxic_Comments_Protection {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_ajax_tcp_calculate_score', $plugin_admin, 'process_comment' );
 
 	}
 
@@ -172,6 +179,7 @@ class Toxic_Comments_Protection {
 
 
 		$this->loader->add_action( 'comment_post', $plugin_public, 'process_comment', 10, 3 );
+
 
 	}
 

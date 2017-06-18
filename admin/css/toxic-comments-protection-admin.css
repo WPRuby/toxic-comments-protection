@@ -2,3 +2,45 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+.tcp-score{
+  width: 30px;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+}
+.tcp_loader{
+  background-image: url('../images/spinner.gif');
+  width: 20px;
+  height: 20px;
+  display: none;
+}
+ .score-10{
+   background: #09ac3b
+ }
+ .score-20{
+   background: #36f007
+ }
+ .score-30{
+   background: #59f007
+ }
+ .score-40{
+   background: #baf007
+ }
+ .score-50{
+   background: #f0e607
+ }
+ .score-60{
+   background: #f0af07
+ }
+ .score-70{
+   background: #f08507
+ }
+ .score-80{
+   background: #f05b07
+ }
+ .score-90{
+   background: #f03f07
+ }
+ .score-100{
+   background: #ff0011
+ }

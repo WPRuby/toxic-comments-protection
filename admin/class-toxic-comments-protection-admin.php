@@ -99,5 +99,60 @@ class Toxic_Comments_Protection_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/toxic-comments-protection-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
+	/**
+	 * The function process the comment when posted
+	 *
+	 * @since    1.0.0
+	 */
+	public function process_comment() {
+		$comment_id = intval($_POST['comment_id']);
+		$commentdata = get_comment($comment_id);
+		$comment = array(
+			'comment' => array(
+				'text' => $commentdata->comment_content,
+				'type' => 'PLAIN_TEXT',
+			),
+			'requestedAttributes' => array(
+				'TOXICITY' => array(
+					'scoreType'=>'PROBABILITY',
+				)
+			),
+				'languages' => 'en',
+				'doNotStore' => false,
+		 );
 
+		// The data to send to the API
+		$postData = ($comment);
+
+		// Setup cURL
+		$ch = curl_init('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' . PERSPECTIVE_API_KEY);
+		curl_setopt_array($ch, array(
+		    CURLOPT_POST => TRUE,
+		    CURLOPT_RETURNTRANSFER => TRUE,
+		    CURLOPT_HTTPHEADER => array(
+		        'Content-Type: application/json'
+		    ),
+		    CURLOPT_POSTFIELDS => json_encode($postData)
+		));
+
+		// Send the request
+		$response = curl_exec($ch);
+
+		//@TODO Handling errors, and checking success or error
+		// Decode the response
+		$responseData = json_decode($response, TRUE);
+		$score = $responseData['attributeScores']['TOXICITY']['summaryScore']['value'];
+		add_comment_meta( $comment_id, 'tcp_score', $score );
+		$rounded_score = round($score * 100, 2);
+		$number = $rounded_score / 10;
+		$css_class_value = ceil($number) * 10;
+		if($number != 0)
+			echo sprintf('<span class="tcp-score score-%s">%s%%</span>', strval($css_class_value),strval($rounded_score));
+		else
+			echo sprintf('<a href="#" class="tcp_calculate_score" data-id="%s">%s</a>', strval($comment_id), __('Calculate Score', 'toxic-comments-protection'));
+
+		wp_die();
+
+
+}
 }

@@ -30,6 +30,9 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+
+define('PERSPECTIVE_API_KEY',	'AIzaSyBuynwHEM9k9oeAn41GV5c5jQhAuBdgqO0');
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-toxic-comments-protection-activator.php
@@ -87,7 +90,15 @@ add_filter('manage_comments_custom_column' , 'tcp_comments_columns_value',1,2);
 function tcp_comments_columns_value($column,	$comment_id){
 	if($column == 'tcp_score'){
 		$score = floatval(get_comment_meta($comment_id, 'tcp_score', true));
-		$rounded_score = round($score * 100, 2) . '%';
-		echo sprintf('<span class="response column-response"><span class="post-com-count-wrapper post-com-count-1"><a href="#" class="post-com-count post-com-count-approved"><span class="comment-count-approved" aria-hidden="true">%s</span><span class="screen-reader-text">11 comments</span></a></span></span>',strval($rounded_score));
+		$rounded_score = round($score * 100, 2);
+		$number = $rounded_score / 10;
+		$css_class_value = ceil($number) * 10;
+		if($number != 0){
+			echo sprintf('<span class="tcp-score score-%s">%s%%</span>', strval($css_class_value),strval($rounded_score));
+
+		}else{
+			echo sprintf('<a href="#" class="tcp_calculate_score" data-id="%s">%s</a>', strval($comment_id), __('Calculate Score', 'toxic-comments-protection'));
+			echo '<div class="tcp_loader"></div>';
 	}
+}
 }

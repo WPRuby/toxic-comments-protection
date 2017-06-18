@@ -28,5 +28,22 @@
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
 	 */
+	 $( window ).load(function() {
+		 $('.tcp_calculate_score').click(function(e){
+	 		 e.preventDefault();
+	 		 var comment_id = $(this).attr('data-id');
+			 var score_link = $(this);
+			 score_link.hide()
+			 score_link.parent().find('.tcp_loader').show();
+	 		 $.ajax({
+	 			 method: "POST",
+				 url:ajaxurl,
+	 			 data: {comment_id: comment_id, action: 'tcp_calculate_score'},
+	 			 success: function(response){
+	 				 score_link.parent().html(response);
+	 			 }
+	 		 });
+	 	 });
+	 });
 
 })( jQuery );
