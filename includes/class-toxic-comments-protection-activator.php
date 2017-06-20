@@ -30,7 +30,12 @@ class Toxic_Comments_Protection_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+		$tcp_general = array(
+				'tcp_general' =>	array(
+					'hold_comments_score_ceil'	=>	'90'
+				)
+		);
+		add_option('tcp_general', $tcp_general);
 	}
 
 }

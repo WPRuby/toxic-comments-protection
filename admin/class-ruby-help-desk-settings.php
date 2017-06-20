@@ -56,7 +56,7 @@ class TCP_Settings {
               array(
                   'name'    => 'hold_comments_score_ceil',
                   'label'   => __( 'Comments Holding Ceil', 'toxic-comments-protection' ),
-                  'desc'    => __( 'Hold the comment for admistration approval if had a toxic score more than this option', 'toxic-comments-protection' ),
+                  'desc'    => __( 'Hold the comment for administration approval if it had a toxic score more than this value.', 'toxic-comments-protection' ),
                   'type'    => 'select',
                   'options' => array(
                     '10' => 10,

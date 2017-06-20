@@ -136,22 +136,22 @@ class Toxic_Comments_Protection_Public {
 		    CURLOPT_POSTFIELDS => json_encode($postData)
 		));
 
-		// Send the request
-		$response = curl_exec($ch);
+		try{
+			// Send the request
+			$response = curl_exec($ch);
 
-		//@TODO Handling errors, and checking success or error
-		// Decode the response
-		$responseData = json_decode($response, TRUE);
-		$score = $responseData['attributeScores']['TOXICITY']['summaryScore']['value'];
-		add_comment_meta( $comment_id, 'tcp_score', $score );
+			// Decode the response
+			$responseData = json_decode($response, TRUE);
+			$score = $responseData['attributeScores']['TOXICITY']['summaryScore']['value'];
+			add_comment_meta( $comment_id, 'tcp_score', $score );
 
-		//@TODO get max score from settings
-		$tcp_option = get_option('tcp_general');
-		if(isset($tcp_option['hold_comments_score_ceil'])){
-			if(($score * 100) > intval($tcp_option['hold_comments_score_ceil'])){
-				 wp_set_comment_status( $comment_id, 'hold' );
+			$tcp_option = get_option('tcp_general');
+			if(isset($tcp_option['hold_comments_score_ceil'])){
+				if(($score * 100) > intval($tcp_option['hold_comments_score_ceil'])){
+					 wp_set_comment_status( $comment_id, 'hold' );
+				}
 			}
-		}
+		}catch(Exception $e){}
 
 
 	}

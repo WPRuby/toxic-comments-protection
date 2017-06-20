@@ -44,3 +44,10 @@
  .score-100{
    background: #ff0011
  }
+ #tcp_general table tr th {
+   padding: 10px;
+ }
+#tcp_general .form-table{
+    background: #fff;
+    border: 1px solid #d0d0d0;
+}

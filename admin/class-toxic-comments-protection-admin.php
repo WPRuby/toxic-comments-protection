@@ -135,21 +135,24 @@ class Toxic_Comments_Protection_Admin {
 		    CURLOPT_POSTFIELDS => json_encode($postData)
 		));
 
-		// Send the request
-		$response = curl_exec($ch);
+			try{
 
-		//@TODO Handling errors, and checking success or error
-		// Decode the response
-		$responseData = json_decode($response, TRUE);
-		$score = $responseData['attributeScores']['TOXICITY']['summaryScore']['value'];
-		add_comment_meta( $comment_id, 'tcp_score', $score );
-		$rounded_score = round($score * 100, 2);
-		$number = $rounded_score / 10;
-		$css_class_value = ceil($number) * 10;
-		if($number != 0)
-			echo sprintf('<span class="tcp-score score-%s">%s%%</span>', strval($css_class_value),strval($rounded_score));
-		else
-			echo sprintf('<a href="#" class="tcp_calculate_score" data-id="%s">%s</a>', strval($comment_id), __('Calculate Score', 'toxic-comments-protection'));
+				// Send the request
+				$response = curl_exec($ch);
+
+				// Decode the response
+				$responseData = json_decode($response, TRUE);
+				$score = $responseData['attributeScores']['TOXICITY']['summaryScore']['value'];
+				add_comment_meta( $comment_id, 'tcp_score', $score );
+				$rounded_score = round($score * 100, 2);
+				$number = $rounded_score / 10;
+				$css_class_value = ceil($number) * 10;
+				if($number != 0)
+					echo sprintf('<span class="tcp-score score-%s">%s%%</span>', strval($css_class_value),strval($rounded_score));
+				else
+					echo sprintf('<a href="#" class="tcp_calculate_score" data-id="%s">%s</a>', strval($comment_id), __('Calculate Score', 'toxic-comments-protection'));
+
+		}catch(Exception $e){}
 
 		wp_die();
 
