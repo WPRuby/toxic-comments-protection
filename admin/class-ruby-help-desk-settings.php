@@ -54,6 +54,13 @@ class TCP_Settings {
         $settings_fields = array(
             'tcp_general' => array(
               array(
+                  'name'    => 'perspective_api_key',
+                  'label'   => __( 'Prevent API from storing data', 'toxic-comments-protection' ),
+                  'desc'    => __( 'You can get an API key from going to the <a href="https://console.developers.google.com/">Google Developer Console</a> and ensuring the API is activated against your account.', 'toxic-comments-protection' ),
+                  'type'    => 'text',
+                  'default' => ''
+              ),
+              array(
                   'name'    => 'hold_comments_score_ceil',
                   'label'   => __( 'Comments Holding Ceil', 'toxic-comments-protection' ),
                   'desc'    => __( 'Hold the comment for administration approval if it had a toxic score more than this value.', 'toxic-comments-protection' ),
@@ -71,7 +78,13 @@ class TCP_Settings {
                     '100' => 100,
                   )
               ),
-
+              array(
+                  'name'    => 'do_not_store_comments',
+                  'label'   => __( 'Prevent API from storing data', 'toxic-comments-protection' ),
+                  'desc'    => __( 'This should be checked if comments being submitted is private (i.e. not publicly accessible), or if the comments submitted contains content written by someone under 13 years old.', 'toxic-comments-protection' ),
+                  'type'    => 'checkbox',
+                  'default' => 'on'
+              ),
             )
 
         );

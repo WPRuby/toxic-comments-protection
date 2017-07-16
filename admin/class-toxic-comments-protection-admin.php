@@ -105,6 +105,7 @@ class Toxic_Comments_Protection_Admin {
 	 * @since    1.0.0
 	 */
 	public function process_comment() {
+		$tcp_option = get_option('tcp_general');
 		$comment_id = intval($_POST['comment_id']);
 		$commentdata = get_comment($comment_id);
 		$comment = array(
@@ -118,14 +119,14 @@ class Toxic_Comments_Protection_Admin {
 				)
 			),
 				'languages' => 'en',
-				'doNotStore' => false,
+				'doNotStore' => ($tcp_option['do_not_store_comments'] === 'on')?true:false,
 		 );
 
 		// The data to send to the API
 		$postData = ($comment);
 
 		// Setup cURL
-		$ch = curl_init('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' . PERSPECTIVE_API_KEY);
+		$ch = curl_init('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' . $tcp_option['perspective_api_key']);
 		curl_setopt_array($ch, array(
 		    CURLOPT_POST => TRUE,
 		    CURLOPT_RETURNTRANSFER => TRUE,

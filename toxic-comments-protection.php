@@ -31,7 +31,6 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 
-define('PERSPECTIVE_API_KEY',	'AIzaSyBuynwHEM9k9oeAn41GV5c5jQhAuBdgqO0');
 
 /**
  * The code that runs during plugin activation.

@@ -107,7 +107,7 @@ class Toxic_Comments_Protection_Public {
 	 * @since    1.0.0
 	 */
 	public function process_comment($comment_id,	$comment_approved,	$commentdata) {
-
+		$tcp_option = get_option('tcp_general');
 		$comment = array(
 			'comment' => array(
 				'text' => $commentdata['comment_content'],
@@ -119,14 +119,14 @@ class Toxic_Comments_Protection_Public {
 				)
 			),
 				'languages' => 'en',
-				'doNotStore' => false,
+				'doNotStore' =>  ($tcp_option['do_not_store_comments'] === 'on')?true:false,
 		 );
 
 		// The data to send to the API
 		$postData = ($comment);
 
 		// Setup cURL
-		$ch = curl_init('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' . PERSPECTIVE_API_KEY);
+		$ch = curl_init('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=' . $tcp_option['perspective_api_key']);
 		curl_setopt_array($ch, array(
 		    CURLOPT_POST => TRUE,
 		    CURLOPT_RETURNTRANSFER => TRUE,
@@ -145,7 +145,6 @@ class Toxic_Comments_Protection_Public {
 			$score = $responseData['attributeScores']['TOXICITY']['summaryScore']['value'];
 			add_comment_meta( $comment_id, 'tcp_score', $score );
 
-			$tcp_option = get_option('tcp_general');
 			if(isset($tcp_option['hold_comments_score_ceil'])){
 				if(($score * 100) > intval($tcp_option['hold_comments_score_ceil'])){
 					 wp_set_comment_status( $comment_id, 'hold' );
